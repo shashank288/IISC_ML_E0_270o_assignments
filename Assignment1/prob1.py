@@ -1,11 +1,12 @@
 import os
-
+import argparse
+import pickle
+import numpy as np
+import pandas as pd
 from utils import *
 from model import *
 
-
 def main(args: argparse.Namespace):
-    # set seed for reproducibility
     set_seed(args.sr_no)
 
     # Load the data
@@ -20,39 +21,31 @@ def main(args: argparse.Namespace):
 
 
     # Train the model
-    model = GaussianNaiveBayes(alpha=args.smoothing)
-    model.fit(X_train_vec, y_train)
+    model = GaussianNaiveBayes(var_smoothing=args.smoothing)
+    model.fit(X_train, y_train)
     print("Model Trained")
 
     # Evaluate the trained model
-    y_pred = model.predict(X_train_vec)
+    y_pred = model.predict(X_train)
     print(f"Train Accuracy: {np.mean(y_pred == y_train)}")
-    y_pred = model.predict(X_val_vec)
+    y_pred = model.predict(X_val)
     print(f"Validation Accuracy: {np.mean(y_pred == y_val)}")
+    
     # TODO: Note down the validation accuracy
-    # TODO: Write and call functions for other evaluation metrics 
+    # TODO: Write and call functions for precision, recall, f1, roc-auc
+    # TODO: Plot ROC and Precision-Recall curves
+    # TODO: Provide confusion matrix and find threshold for >0.95 recall
 
     # Load the test data
-    if os.path.exists(f"{args.data_path}/X_test{args.intermediate}"):
-        X_test_vec = pickle.load(open(
-            f"{args.data_path}/X_test{args.intermediate}", "rb"))
-        print("Preprocessed Test Data Loaded")
-    else:
-        X_test = pd.read_csv(
-            f"{args.data_path}/X_test_{args.sr_no}.csv", header=None
-        ).values.squeeze()
-        print("Test Data Loaded")
-    preds = model.predict(X_test)
-    with open(f"predictions.csv", "w") as f:
-        for pred in preds:
-            f.write(f"{pred}\n")
-    print("Predictions Saved to predictions.csv")
-    print("You may upload the file at http://10.192.30.174:8000/submit")
+    if os.path.exists(f"{args.data_path}/test1.csv"):
+        # TODO: Load test1.csv, preprocess, predict, and report final metrics
+        pass
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--sr_no", type=int, required=True)
     parser.add_argument("--data_path", type=str, default="data")
-    parser.add_argument("--train_file", type=str, default="train.csv")
+    parser.add_argument("--train_file", type=str, default="train1.csv")
+    parser.add_argument("--smoothing", type=float, default=1e-9)
     main(parser.parse_args())

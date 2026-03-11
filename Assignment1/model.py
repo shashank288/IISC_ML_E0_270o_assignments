@@ -1,20 +1,20 @@
 import numpy as np
 
-
 class GaussianNaiveBayes:
 
     """
     A Gaussian Naive Bayes classifier.
     """
 
-    def __init__(self):
+    def __init__(self, var_smoothing: float = 1e-9):
+        self.var_smoothing = var_smoothing
         self.priors_ = None        # shape: (n_classes,)
         self.means_ = None         # shape: (n_classes, n_features)
         self.vars_ = None          # shape: (n_classes, n_features)
         self.classes_ = None
 
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
+    def fit(self, X: np.ndarray, y: np.ndarray, update: bool = False) -> None:
         """
         Fit the model on the training data
         :param X: np.ndarray
@@ -47,4 +47,3 @@ class GaussianNaiveBayes:
             log_probs = []
             raise NotImplementedError
         return np.array(preds)
-        

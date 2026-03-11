@@ -3,7 +3,6 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def main(args: argparse.Namespace):
     assert os.path.exists(args.logs_path), "Invalid logs path"
     # for i in [True, False]:
